@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #1a1a1a;
+  --accent: #e86a00;
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    @apply bg-ink text-white font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Native scrollbar — thin accent thumb */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #e86a00 transparent;
+  }
+
+  html::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff8a26, #e86a00 55%, #c25600);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff9a40, #e86a00 55%, #c25600);
+    background-clip: padding-box;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+
+  /* Range slider — unified look across browsers */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 4px;
+    border-radius: 999px;
+    background: transparent;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 22px;
+    width: 22px;
+    margin-top: -9px;
+    border-radius: 999px;
+    background: var(--accent);
+    border: 3px solid #fff;
+    box-shadow: 0 6px 18px -4px rgba(232, 106, 0, 0.9);
+    transition: transform 0.15s ease;
+  }
+
+  input[type='range']::-webkit-slider-thumb:hover {
+    transform: scale(1.12);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    height: 22px;
+    width: 22px;
+    border-radius: 999px;
+    background: var(--accent);
+    border: 3px solid #fff;
+    box-shadow: 0 6px 18px -4px rgba(232, 106, 0, 0.9);
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1320px] px-5 sm:px-8;
+  }
+
+  /*
+   * Spacing scale — «внешнее ≥ внутреннее» на каждом уровне:
+   * section-y (между секциями) > section-gap (шапка→контент)
+   *   > card-gap (между карточками) ≤ card-pad (внутри карточки)
+   *     > stack (текст/списки внутри)
+   */
+  .section-y {
+    @apply py-20 lg:py-28;
+  }
+
+  .section-y-tight {
+    @apply py-16 lg:py-20;
+  }
+
+  .section-gap {
+    @apply mt-10 lg:mt-12;
+  }
+
+  .section-stack {
+    @apply flex flex-col gap-10 lg:gap-12;
+  }
+
+  .card-gap {
+    @apply gap-5 lg:gap-6;
+  }
+
+  .card-pad {
+    @apply p-6 sm:p-8;
+  }
+
+  .stack-sm {
+    @apply gap-3;
+  }
+
+  .stack-md {
+    @apply gap-4;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-7 py-3.5
+           text-sm font-bold uppercase tracking-wider text-white transition-all duration-300
+           hover:-translate-y-0.5 hover:bg-accent-light hover:shadow-accent
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+           focus-visible:outline-accent active:translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/25
+           bg-white/5 px-7 py-3.5 text-sm font-semibold uppercase tracking-wider text-white
+           backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5
+           hover:border-white/60 hover:bg-white/10
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+           focus-visible:outline-white/60;
+  }
+
+  .glass-card {
+    @apply rounded-3xl border border-white/[0.12] bg-white/[0.06] backdrop-blur-2xl shadow-glass;
+  }
+
+  .section-label {
+    @apply inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.35em] text-accent;
+  }
+
+  .field-input {
+    @apply w-full bg-transparent py-4 text-sm font-medium text-white outline-none
+           placeholder:text-white/30;
+  }
+
+  .grid-lines {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
