@@ -1,0 +1,40 @@
+# Dependencies and build output (rebuilt inside the image)
+node_modules
+.next
+out
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# VCS / deployment metadata
+.git
+.gitignore
+.vercel
+
+# Environment files (configure values in Coolify instead)
+.env
+.env.*
+!.env.example
+
+# Docs
+README.md
+DEPLOYMENT.md
+
+# Logs and coverage
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage
+
+# IDE / OS
+.vscode
+.idea
+.cursor
+.DS_Store
+Thumbs.db
+*.pem
+
+# Docker
+Dockerfile
+.dockerignore
