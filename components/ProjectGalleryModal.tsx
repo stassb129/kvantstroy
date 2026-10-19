@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Quote, X } from 'lucide-react'
 import { EASE } from '@/lib/motion'
 import { typeLabels, type PortfolioProject } from '@/lib/portfolio'
 
@@ -55,6 +55,12 @@ function ModalBody({ project, onClose }: { project: PortfolioProject; onClose: (
   }, [onClose, prev, next])
 
   const current = images[index]
+  const specs = [
+    { label: 'Площадь', value: project.area },
+    { label: 'Срок', value: project.duration },
+    { label: 'Дата', value: project.date },
+    { label: 'Тип', value: typeLabels[project.type] },
+  ].filter((spec): spec is { label: string; value: string } => Boolean(spec.value))
 
   return (
     <motion.div
@@ -114,8 +120,16 @@ function ModalBody({ project, onClose }: { project: PortfolioProject; onClose: (
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={current.src}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full scale-110 select-none object-cover opacity-50 blur-2xl"
+                    draggable={false}
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={current.src}
                     alt={current.alt}
-                    className="h-full w-full select-none object-cover"
+                    className="relative h-full w-full select-none object-contain"
                     draggable={false}
                   />
                   <div
@@ -184,7 +198,7 @@ function ModalBody({ project, onClose }: { project: PortfolioProject; onClose: (
                 transition={{ duration: 0.45, ease: EASE, delay: 0.08 }}
               >
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-accent">
-                  {typeLabels[project.type]} · {project.year}
+                  {[typeLabels[project.type], project.date].filter(Boolean).join(' · ')}
                 </span>
                 <h3
                   id="project-modal-title"
@@ -202,11 +216,16 @@ function ModalBody({ project, onClose }: { project: PortfolioProject; onClose: (
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: EASE, delay: 0.14 }}
-                className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3"
+                className="mt-7 grid grid-cols-2 gap-3"
               >
-                <Spec label="Площадь" value={project.area} />
-                <Spec label="Год" value={project.year} />
-                <Spec label="Тип" value={typeLabels[project.type]} className="col-span-2 sm:col-span-1" />
+                {specs.map((spec, i) => (
+                  <Spec
+                    key={spec.label}
+                    label={spec.label}
+                    value={spec.value}
+                    className={i === specs.length - 1 && specs.length % 2 === 1 ? 'col-span-2' : ''}
+                  />
+                ))}
               </motion.dl>
 
               <motion.ul
@@ -222,6 +241,26 @@ function ModalBody({ project, onClose }: { project: PortfolioProject; onClose: (
                   </li>
                 ))}
               </motion.ul>
+
+              {project.review && (
+                <motion.figure
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, ease: EASE, delay: 0.24 }}
+                  className="mt-8 rounded-[5px] border border-accent/25 bg-accent/[0.06] px-5 py-5"
+                >
+                  <figcaption className="flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <span className="flex items-center gap-2 text-accent">
+                      <Quote size={14} />
+                      Отзыв заказчика
+                    </span>
+                    <span className="text-white/40">{project.review.date}</span>
+                  </figcaption>
+                  <blockquote className="mt-3 text-sm font-light leading-relaxed text-white/75">
+                    «{project.review.text}»
+                  </blockquote>
+                </motion.figure>
+              )}
 
               <motion.div
                 initial={{ opacity: 0 }}

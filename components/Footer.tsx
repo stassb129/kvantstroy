@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowUpRight, Clock, Mail, MapPin, Phone } from 'lucide-react'
-import { navLinks, servicesNav, site } from '@/lib/site'
+import { ArrowUpRight, Clock, ExternalLink, Mail, MapPin, Phone } from 'lucide-react'
+import { navLinks, profiles, servicesNav, site } from '@/lib/site'
 import { fadeInUp, staggerContainer, viewportOnce } from '@/lib/motion'
 import { useLeadModal } from '@/components/LeadModal'
 import Logo from '@/components/Logo'
@@ -132,6 +132,19 @@ export default function Footer() {
                 <MapPin size={16} className="mt-0.5 shrink-0 text-accent" />
                 {site.address}
               </li>
+              {profiles.map((profile) => (
+                <li key={profile.href}>
+                  <a
+                    href={profile.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-white/50 transition-colors hover:text-accent"
+                  >
+                    <ExternalLink size={16} className="shrink-0 text-accent" />
+                    Мы на {profile.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </motion.div>
         </motion.div>

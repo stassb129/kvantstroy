@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ExternalLink, Quote, Star } from 'lucide-react'
 import { fadeInUp, staggerContainer, viewportOnce } from '@/lib/motion'
+import { profiles } from '@/lib/site'
 
 type Review = {
   name: string
@@ -15,6 +16,13 @@ type Review = {
 }
 
 const reviews: Review[] = [
+  {
+    name: 'Заказчик из д. Язово',
+    date: '26 мая 2026',
+    object: 'Обои в лестничном холле, 130 м²',
+    rating: 5,
+    text: 'Александр — отличный специалист. Пунктуальный, вежливый. К своей работе относится серьёзно. Работа выполнена с отличным качеством и в установленный срок. Взялся за работу, на которую никто не откликался: клеить надо было на высоте более 4 метров с лесов и не испортить лестницу и ограждение. Всё получилось. Обязательно обращусь повторно.',
+  },
   {
     name: 'Алексей Ковалёв',
     date: '14 марта 2025',
@@ -159,6 +167,24 @@ export default function Reviews() {
                 }`}
               />
             ))}
+          </div>
+
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <span className="text-sm font-light text-white/50">Все отзывы на площадках:</span>
+            <div className="flex flex-wrap justify-center gap-3">
+              {profiles.map((profile) => (
+                <a
+                  key={profile.href}
+                  href={profile.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost !px-5 !py-3 !text-xs"
+                >
+                  {profile.label}
+                  <ExternalLink size={14} className="text-accent" />
+                </a>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>

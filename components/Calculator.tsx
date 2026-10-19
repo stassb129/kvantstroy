@@ -5,13 +5,27 @@ import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Calculator as CalcIcon, ChevronDown, Ruler, Wrench } from 'lucide-react'
 import { fadeInUp, scaleIn, staggerContainer, viewportOnce } from '@/lib/motion'
 import { useLeadModal } from '@/components/LeadModal'
+import { extraWorksNote } from '@/lib/site'
 
-/** Rate per m²: [работы, работы + базовые материалы] */
+/** Work-only rate per m², from `minRate` to `maxRate`. */
 const WORK_TYPES = [
-  { id: 'screed', label: 'Устройство стяжки пола', workRate: 1300, fullRate: 1500 },
-  { id: 'floors', label: 'Укладка напольных покрытий', workRate: 1700, fullRate: 2400 },
-  { id: 'wallpaper', label: 'Поклейка обоев', workRate: 750, fullRate: 1050 },
+  { id: 'laminate', group: 'Полы', label: 'Укладка ламината', minRate: 700, maxRate: 1200 },
+  { id: 'quartz-vinyl', group: 'Полы', label: 'Укладка кварцвинила', minRate: 1200, maxRate: 2500 },
+  { id: 'porcelain', group: 'Полы', label: 'Укладка керамогранита', minRate: 3500, maxRate: 12000 },
+  { id: 'linoleum', group: 'Полы', label: 'Укладка линолеума', minRate: 400, maxRate: 1500 },
+  { id: 'wallpaper', group: 'Обои', label: 'Монтаж обоев', minRate: 600, maxRate: 1300 },
+  {
+    id: 'washable-wallpaper',
+    group: 'Обои',
+    label: 'Монтаж моющих / антивандальных обоев (1 слой)',
+    minRate: 250,
+    maxRate: 250,
+  },
+  { id: 'wallpaper-removal', group: 'Обои', label: 'Демонтаж обоев (1 слой)', minRate: 150, maxRate: 150 },
+  { id: 'screed', group: 'Стяжка', label: 'Устройство стяжки пола', minRate: 700, maxRate: 700, fromRate: true },
 ] as const
+
+const WORK_GROUPS = Array.from(new Set(WORK_TYPES.map((t) => t.group)))
 
 const AREA_PRESETS = [10, 50, 100, 150, 200] as const
 
@@ -27,8 +41,8 @@ export default function Calculator() {
   const [workTypeId, setWorkTypeId] = useState<string>(WORK_TYPES[0].id)
   // Seeded with the defaults so the server render already shows real figures.
   const [prices, setPrices] = useState(() => ({
-    work: DEFAULT_AREA * WORK_TYPES[0].workRate,
-    full: DEFAULT_AREA * WORK_TYPES[0].fullRate,
+    min: DEFAULT_AREA * WORK_TYPES[0].minRate,
+    max: DEFAULT_AREA * WORK_TYPES[0].maxRate,
   }))
 
   const workType = useMemo(
@@ -38,10 +52,13 @@ export default function Calculator() {
 
   useEffect(() => {
     setPrices({
-      work: area * workType.workRate,
-      full: area * workType.fullRate,
+      min: area * workType.minRate,
+      max: area * workType.maxRate,
     })
   }, [area, workType])
+
+  const isRange = workType.minRate !== workType.maxRate
+  const isFromRate = 'fromRate' in workType && workType.fromRate
 
   const sliderProgress = ((area - MIN_AREA) / (MAX_AREA - MIN_AREA)) * 100
 
@@ -188,10 +205,14 @@ export default function Calculator() {
                   onChange={(e) => setWorkTypeId(e.target.value)}
                   className="w-full cursor-pointer appearance-none rounded-2xl border border-white/[0.12] bg-ink-700/80 px-5 py-4 pr-12 text-sm font-semibold text-white outline-none transition-colors duration-300 hover:border-accent/50 focus:border-accent"
                 >
-                  {WORK_TYPES.map((type) => (
-                    <option key={type.id} value={type.id} className="bg-ink-800 text-white">
-                      {type.label}
-                    </option>
+                  {WORK_GROUPS.map((group) => (
+                    <optgroup key={group} label={group} className="bg-ink-800 text-white/50">
+                      {WORK_TYPES.filter((type) => type.group === group).map((type) => (
+                        <option key={type.id} value={type.id} className="bg-ink-800 text-white">
+                          {type.label}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 <ChevronDown
@@ -207,14 +228,26 @@ export default function Calculator() {
                 Итоговая стоимость
               </span>
 
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <PriceBlock label="Только работы" value={prices.work} />
-                <PriceBlock label="Работы + материалы" value={prices.full} highlighted />
-              </div>
+              {isRange ? (
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <PriceBlock label="Работы от" value={prices.min} />
+                  <PriceBlock label="Работы до" value={prices.max} highlighted />
+                </div>
+              ) : (
+                <div className="mt-4">
+                  <PriceBlock
+                    label={isFromRate ? 'Стоимость работ от' : 'Стоимость работ'}
+                    value={prices.min}
+                    highlighted
+                  />
+                </div>
+              )}
 
               <p className="mt-4 border-t border-white/10 pt-4 text-xs font-light text-white/40">
-                {formatPrice(workType.workRate)} ₽/м² за работы · {formatPrice(workType.fullRate)} ₽/м² с
-                базовыми материалами
+                {isRange
+                  ? `${formatPrice(workType.minRate)} – ${formatPrice(workType.maxRate)}`
+                  : `${isFromRate ? 'от ' : ''}${formatPrice(workType.minRate)}`}{' '}
+                ₽/м² за работы, без учёта материалов. {`${extraWorksNote}.`}
               </p>
             </div>
 

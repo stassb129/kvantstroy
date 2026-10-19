@@ -2,12 +2,19 @@ export const site = {
   name: 'КВАНТ-СТРОЙ',
   tagline: 'ТЕХНОЛОГИИ И КАЧЕСТВО',
   logo: '/logo.svg',
-  phone: '+7 (495) 150-44-33',
-  phoneHref: 'tel:+74951504433',
+  phone: '+7 (995) 558-54-44',
+  phoneHref: 'tel:+79955585444',
   schedule: 'Ежедневно с 9:00 до 21:00',
-  email: 'info@kvant-stroy.ru',
+  email: 'kvant.stroi.msk@gmail.com',
   address: 'Москва, ул. Пресненская наб., 12',
 } as const
+
+export const profiles = [
+  { label: 'Профи.ру', href: 'https://profi.ru/profile/AgafonovAV63' },
+  { label: 'Авито', href: 'https://www.avito.ru/user/6936681bb81c3d11f709f8e84084cbb5/profile' },
+] as const
+
+export const extraWorksNote = 'Сопутствующие работы обговариваются по месту'
 
 export const navLinks = [
   { label: 'Услуги', href: '/services' },

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Check, ChevronDown } from 'lucide-react'
 import { useLeadModal } from '@/components/LeadModal'
 import { EASE, fadeInUp, slideInLeft, slideInRight, staggerContainer, viewportOnce } from '@/lib/motion'
+import { extraWorksNote } from '@/lib/site'
 
 type Spec = { label: string; value: string }
 
@@ -30,19 +31,22 @@ const services: Service[] = [
     title: 'ПОЛЫ',
     eyebrow: 'Напольные покрытия',
     description:
-      'Укладываем почти все виды напольных покрытий: ламинат, линолеум и мармолеум, инженерную доску, паркет и массив. Готовим основание, контролируем влажность и сдаём пол без скрипов и перепадов.',
-    price: 'от 800',
+      'Укладываем почти все виды напольных покрытий: ламинат, кварцвинил, керамогранит, линолеум и мармолеум, инженерную доску, паркет и массив. Готовим основание, контролируем влажность и сдаём пол без скрипов и перепадов.',
+    price: 'от 400',
     unit: '₽/м²',
     image:
       'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80',
     imageAlt: 'Напольное покрытие в современном интерьере',
     bullets: [
-      'Ламинат, линолеум, мармолеум',
-      'Инженерная доска, паркет, массив',
+      'Ламинат, кварцвинил, линолеум',
+      'Керамогранит, паркет, массив',
       'Подложка, порожки, плинтус в смете',
     ],
     specs: [
-      { label: 'Виды покрытий', value: 'ламинат, линолеум, мармолеум, инженерная доска, паркет, массив' },
+      {
+        label: 'Виды покрытий',
+        value: 'ламинат, кварцвинил, керамогранит, линолеум, мармолеум, инженерная доска, паркет, массив',
+      },
       { label: 'Класс износостойкости (ламинат)', value: '31–34' },
       { label: 'Влажность основания', value: 'не более 2,0 % CM' },
       { label: 'Финиш для дерева', value: 'масло-воск Osmo, лак Bona' },
@@ -61,7 +65,7 @@ const services: Service[] = [
     image:
       'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=80',
     imageAlt: 'Фактурные стены в современном интерьере',
-    bullets: ['Подготовка под покраску', 'Бесшовная стыковка', 'Дизайнерские фактуры'],
+    bullets: ['Подготовка под покраску', 'Бесшовная стыковка', 'Дизайнерские фактуры', 'Фрески и фотообои'],
     specs: [
       { label: 'Подготовка стен', value: 'шпаклёвка Q3–Q4, грунт в 2 слоя' },
       { label: 'Типы полотна', value: 'флизелин, винил, текстиль, стеклохолст' },
@@ -200,6 +204,7 @@ function ServiceRow({ service, index }: { service: Service; index: number }) {
                 <span className="text-3xl font-black tracking-tight text-accent">{price}</span>
                 <span className="text-sm font-semibold text-white/50">{unit}</span>
               </p>
+              <p className="mt-1.5 text-xs font-light text-white/45">{extraWorksNote}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link href="/#calculator" className="btn-ghost px-5 py-3 text-xs">

@@ -300,14 +300,24 @@ function DesktopSlide({
           </p>
 
           <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-3 border-t border-white/10 pt-6 text-sm">
-            <div>
-              <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Площадь</dt>
-              <dd className="mt-1 font-semibold text-white/85">{project.area}</dd>
-            </div>
-            <div>
-              <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Год</dt>
-              <dd className="mt-1 font-semibold text-white/85">{project.year}</dd>
-            </div>
+            {project.area && (
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Площадь</dt>
+                <dd className="mt-1 font-semibold text-white/85">{project.area}</dd>
+              </div>
+            )}
+            {project.duration && (
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Срок</dt>
+                <dd className="mt-1 font-semibold text-white/85">{project.duration}</dd>
+              </div>
+            )}
+            {project.date && (
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Дата</dt>
+                <dd className="mt-1 font-semibold text-white/85">{project.date}</dd>
+              </div>
+            )}
             <div>
               <dt className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">Объект</dt>
               <dd className="mt-1 font-semibold text-white/85">{project.subtitle}</dd>
@@ -376,7 +386,7 @@ function MobileSlide({
         </h2>
         <p className="mt-4 text-sm font-light leading-relaxed text-white/60">{project.description}</p>
         <p className="mt-4 text-sm font-medium text-white/50">
-          {project.area} · {project.year}
+          {[project.area, project.duration, project.date].filter(Boolean).join(' · ')}
         </p>
         <button type="button" onClick={onOpen} className="btn-accent group mt-7">
           Подробнее
