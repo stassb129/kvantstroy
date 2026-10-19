@@ -23,8 +23,8 @@ export default function BeforeAfterSlider({
   initial = 50,
   beforeLabel = 'ДО',
   afterLabel = 'ПОСЛЕ',
-  beforeSrc = 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1400&q=80',
-  afterSrc = 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80',
+  beforeSrc,
+  afterSrc,
   className = '',
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)

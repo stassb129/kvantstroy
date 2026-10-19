@@ -20,11 +20,10 @@ const services: Service[] = [
   {
     number: '01',
     title: 'ПОЛЫ',
-    description: 'Ламинат, паркет, линолеум и инженерная доска',
+    description: 'Ламинат, кварцвинил, керамогранит, линолеум и паркет',
     href: '/services#floors',
     tilt: -1,
-    image:
-      'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80',
+    image: '/images/stock/home-floors.jpg',
   },
   {
     number: '02',
@@ -32,8 +31,7 @@ const services: Service[] = [
     description: 'Идеальные стены для вашего интерьера',
     href: '/services#wallpaper',
     tilt: 0,
-    image:
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80',
+    image: '/images/stock/home-wallpaper.jpg',
   },
   {
     number: '03',
@@ -41,8 +39,7 @@ const services: Service[] = [
     description: 'Основа идеального пола',
     href: '/services#screed',
     tilt: 1,
-    image:
-      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80',
+    image: '/images/stock/home-screed.jpg',
   },
 ]
 
@@ -110,8 +107,8 @@ export default function Services() {
           <div className="h-[340px] sm:h-[420px] lg:h-[460px]">
             <BeforeAfterSlider
               initial={46}
-              beforeSrc="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1400&q=80"
-              afterSrc="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80"
+              beforeSrc="/portfolio/case-2/02.jpg"
+              afterSrc="/portfolio/case-2/01.jpg"
             />
           </div>
 
