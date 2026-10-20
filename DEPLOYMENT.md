@@ -6,7 +6,7 @@ The same commit deploys to both **Vercel** (unchanged, zero config) and **Coolif
 
 - Next.js 14.2 (App Router), React 18, TypeScript, Tailwind CSS. Package manager: **npm** (`package-lock.json`).
 - All pages (`/`, `/services`, `/portfolio`, `/prices`, `/technologies`) are statically prerendered at build time.
-  The only server route is `GET /api/health`.
+  Server routes: `GET /api/health`, `POST /api/lead` (email via SMTP).
 - `next.config.mjs` uses `output: 'standalone'`. `npm run build` runs `next build`, then the `postbuild` script
   copies `public/` and `.next/static/` into `.next/standalone/`. `npm run start` runs `node .next/standalone/server.js`.
 - `sharp` is a dependency so `next/image` optimization works in standalone mode (Vercel uses its own optimizer).
@@ -29,16 +29,22 @@ docker run --rm -p 3000:3000 kvantstroy
 
 ## Environment variables
 
-The application code reads **no custom environment variables**. Nothing is required at build time or runtime.
-See `.env.example`.
+See `.env.example`. Nothing is required at **build** time. Lead email needs SMTP at **runtime**.
 
-| Variable                  | When    | Required | Default   |
-| ------------------------- | ------- | -------- | --------- |
-| `PORT`                    | runtime | no       | `3000`    |
-| `HOSTNAME`                | runtime | no       | `0.0.0.0` |
-| `NEXT_TELEMETRY_DISABLED` | both    | no       | `1`       |
+| Variable                  | When    | Required | Default / notes                                      |
+| ------------------------- | ------- | -------- | ---------------------------------------------------- |
+| `PORT`                    | runtime | no       | `3000`                                               |
+| `HOSTNAME`                | runtime | no       | `0.0.0.0`                                            |
+| `NEXT_TELEMETRY_DISABLED` | both    | no       | `1`                                                  |
+| `LEAD_TO_EMAIL`           | runtime | no       | Dev → `stassb129@gmail.com`; prod → `site.email`     |
+| `SMTP_HOST`               | runtime | for leads | e.g. `smtp.gmail.com`                               |
+| `SMTP_PORT`               | runtime | no       | `465`                                                |
+| `SMTP_SECURE`             | runtime | no       | `true` when port is 465                              |
+| `SMTP_USER`               | runtime | for leads | SMTP login                                          |
+| `SMTP_PASS`               | runtime | for leads | SMTP password / Gmail App Password (**secret**)     |
+| `SMTP_FROM`               | runtime | no       | defaults to `SMTP_USER`                              |
 
-There are no `NEXT_PUBLIC_*` variables and no secrets.
+There are no `NEXT_PUBLIC_*` variables.
 
 ## Persistent storage
 
@@ -47,10 +53,9 @@ No volume is needed.
 
 ## External services
 
-- Images on `/`, `/services`, `/portfolio`, `/technologies` are loaded **by the browser** directly from
-  `images.unsplash.com` (plain `<img>`, not proxied through the server).
-- No database, auth, CRM, email or analytics. The lead form (`components/LeadModal.tsx`) currently only logs to the
-  browser console.
+- Stock/service images are served from `public/images/stock/` and portfolio from `public/portfolio/`.
+- Lead form: `POST /api/lead` sends email over SMTP (`nodemailer`). Configure SMTP in Coolify / Vercel env.
+- No database, auth, CRM or analytics.
 
 ## Coolify settings
 
@@ -65,7 +70,7 @@ No volume is needed.
 | Port mappings          | leave empty (Coolify proxy routes traffic) |
 | Domains                | your domain, e.g. `https://example.ru`    |
 | Health check path      | `/api/health` (port `3000`)               |
-| Environment variables  | none required                             |
+| Environment variables  | SMTP_* (+ optional LEAD_TO_EMAIL)         |
 | Persistent storage     | none                                      |
 
 Coolify's proxy handles domains and TLS. No nginx/Caddy/compose is needed for this app.
@@ -79,5 +84,6 @@ None found: no `vercel.json`, no `@vercel/*` packages, no `VERCEL_*` variables, 
 
 1. Point the domain's DNS `A` record to the VPS.
 2. Create the Coolify application with the settings above and deploy.
-3. If you later add `metadataBase`/canonical URLs, a sitemap, or a backend for the lead form, add the corresponding
-   variables (e.g. `NEXT_PUBLIC_SITE_URL`, which is needed at **build** time) both in Vercel and in Coolify.
+3. Set SMTP env vars (and optionally `LEAD_TO_EMAIL=kvant.stroi.msk@gmail.com`) in Coolify / Vercel.
+   For Gmail: enable 2FA → create an [App Password](https://myaccount.google.com/apppasswords) → use it as `SMTP_PASS`.
+4. Locally: copy `.env.example` → `.env.local`, set `SMTP_USER` / `SMTP_PASS`. Without SMTP the form returns 503.

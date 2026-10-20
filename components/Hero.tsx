@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, CalendarCheck, PlayCircle, ShieldCheck, Sparkles } from 'lucide-react'
+import { ArrowRight, CalendarCheck, ShieldCheck, Sparkles } from 'lucide-react'
 import { EASE, fadeInUp, slideInRight, staggerContainer } from '@/lib/motion'
 
 const highlights = [
@@ -46,10 +46,7 @@ export default function Hero() {
               Стяжка, напольные покрытия и поклейка обоев — инженерные решения и качество на каждом этапе.
             </motion.p>
 
-            <motion.div
-              variants={fadeInUp}
-              className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
-            >
+            <motion.div variants={fadeInUp} className="mt-8">
               <a href="#calculator" className="btn-accent group">
                 Рассчитать стоимость
                 <ArrowRight
@@ -57,13 +54,6 @@ export default function Hero() {
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </a>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-2.5 px-2 py-3 text-sm font-semibold text-white/80 transition-colors hover:text-white"
-              >
-                <PlayCircle size={22} className="text-accent" />
-                Смотреть видео о технологии
-              </button>
             </motion.div>
 
             <motion.ul

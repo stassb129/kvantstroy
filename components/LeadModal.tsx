@@ -54,7 +54,7 @@ type LeadModalProps = {
   onClose: () => void
 }
 
-type Status = 'idle' | 'submitting' | 'success'
+type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 function LeadModal({ open, source, onClose }: LeadModalProps) {
   const titleId = useId()
@@ -63,6 +63,7 @@ function LeadModal({ open, source, onClose }: LeadModalProps) {
   const [phone, setPhone] = useState('+7')
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({})
   const [status, setStatus] = useState<Status>('idle')
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   // Reset form each time the modal opens; lock body scroll while it's visible.
   useEffect(() => {
@@ -72,6 +73,7 @@ function LeadModal({ open, source, onClose }: LeadModalProps) {
     setPhone('+7')
     setErrors({})
     setStatus('idle')
+    setSubmitError(null)
     document.body.style.overflow = 'hidden'
 
     const focusTimer = window.setTimeout(() => nameRef.current?.focus(), 80)
@@ -101,11 +103,25 @@ function LeadModal({ open, source, onClose }: LeadModalProps) {
     if (!validate()) return
 
     setStatus('submitting')
-    // Placeholder for CRM / API — keeps UX responsive until a backend is wired.
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    // eslint-disable-next-line no-console
-    console.log('[lead]', { name: name.trim(), phone, source })
-    setStatus('success')
+    setSubmitError(null)
+
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), phone, source }),
+      })
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null
+      if (!res.ok || !data?.ok) {
+        setSubmitError(data?.error || 'Не удалось отправить заявку. Попробуйте позже.')
+        setStatus('error')
+        return
+      }
+      setStatus('success')
+    } catch {
+      setSubmitError('Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.')
+      setStatus('error')
+    }
   }
 
   return (
@@ -225,6 +241,12 @@ function LeadModal({ open, source, onClose }: LeadModalProps) {
                     />
                   </Field>
 
+                  {submitError && (
+                    <p className="rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
+                      {submitError}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={status === 'submitting'}
@@ -235,6 +257,8 @@ function LeadModal({ open, source, onClose }: LeadModalProps) {
                         <Loader2 size={18} className="animate-spin" />
                         Отправляем…
                       </>
+                    ) : status === 'error' ? (
+                      'Попробовать снова'
                     ) : (
                       'Отправить заявку'
                     )}
